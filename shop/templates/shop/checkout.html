@@ -1,0 +1,86 @@
+{% extends 'shop/basic.html' %}
+{%block title%}Checkout{% endblock%}
+{%block body%}
+<div class="container">
+<div class="col my-2">
+<h3>Step 1- Checkout</h3>
+<div >
+        <ul class="list-group item">
+  </ul>
+</div>
+</div>
+<div class="col my-4">
+<h3>Step 2- Enter Details</h3>
+    <form method="POST" action="/shop/checkout/"> 
+    {% csrf_token %}
+    <input type="hidden" id="item_json" name="item_json"/>
+  <div class="form-row">
+  <div class="form-group col-md-6">
+      <label for="inputPassword4">Name</label>
+      <input type="text" class="form-control" id="name" placeholder="Name" name="name">
+    </div>
+    <div class="form-group col-md-6">
+      <label for="inputEmail4">Email</label>
+      <input type="email" class="form-control" id="email" placeholder="Email" name="email">
+    </div>
+    
+  </div>
+  <div class="form-group">
+    <label for="inputAddress">Address</label>
+    <input type="text" class="form-control" id="address" placeholder="1234 Main St" name="address">
+  </div>
+  
+  <div class="form-row">
+    <div class="form-group col-md-6">
+      <label for="inputCity">City</label>
+      <input type="text" class="form-control" id="inputCity" name="city">
+    </div>
+    <div class="form-group col-md-4">
+      <label for="inputState">State</label>
+     <input type="text" class="form-control" id="state" name="state">
+
+    </div>
+    <div class="form-group col-md-2">
+      <label for="inputZip">Zip</label>
+      <input type="text" class="form-control" id="zip" name="zip">
+    </div>
+  </div>
+  <div class="form-group">
+    <label for="phone">Phone No</label>
+      <input type="tel" class="form-control" id="phone" name="phone">
+  </div>
+  <button type="submit" class="btn btn-primary">Place Order</button>
+</form>
+
+</div>
+</div>
+{%endblock body%}
+{% block js%}
+<script>
+if(localStorage.getItem('cart')==null){
+    var cart={};
+}else{
+    cart=JSON.parse(localStorage.getItem('cart'));
+}
+if ($.isEmptyObject(cart)) {
+    // If object is empty
+    mystr = "<p>Your cart is empty, please add some items before checking out ! </p>" ;
+    $('.item').append(mystr);
+}else{
+    for(item in cart){
+       strreplace=`<li class="list-group-item d-flex justify-content-between align-items-center">
+    ${cart[item][1]}
+    <span class="badge bg-primary rounded-pill">${cart[item][0]}</span>
+  </li>`; 
+      $('.item').append(strreplace);
+
+    } 
+}
+$('#item_json').val(JSON.stringify(cart));
+{%if success%}
+alert("Your Order Id is {{id}}");
+localStorage.clear();
+document.location.href = "/shop/payment/{{id}}";
+{% endif %}
+</script>
+{%endblock%}

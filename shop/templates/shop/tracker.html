@@ -1,0 +1,107 @@
+{% extends 'shop/basic.html' %}
+{%block title%}Checkout{% endblock%}
+{%block body%}
+<div class="container">
+
+<div class="col my-4">
+<h3>Track Order</h3>
+    <form method="POST" action="/shop/tracker/" class="form_ajax"> 
+    {% csrf_token %}
+  <div class="form-row">
+  <div class="form-group col-md-6">
+      <label for="inputPassword4">Order Id</label>
+      <input type="text" class="form-control" id="id" placeholder="Order ID" name="id">
+    </div>
+    <div class="form-group col-md-6">
+      <label for="inputEmail4">Email</label>
+      <input type="email" class="form-control" id="email" placeholder="Email" name="email">
+    </div>
+    
+  </div>
+
+  <button type="submit" class="btn btn-primary">Place Order</button>
+</form>
+
+</div>
+<div class="col my-2 detailsHide">
+<h3>Tracking Details</h3>
+<div >
+        <ul class="list-group item">
+  </ul>
+</div>
+</div>
+<div class="col my-2 detailsHide">
+<div class="col my-2 ">
+<h3>Order Details</h3>
+<div >
+        <ul class="list-group order">
+  </ul>
+</div>
+</div>
+<div class="col my-2 detailsHide">
+<div class="col my-2 ">
+<div >
+  <ol class="breadcrumb text-right">
+    <li class="breadcrumb-item total text-right" ></li>
+  </ol>
+
+  </ul>
+</div>
+</div>
+</div>
+{%endblock body%}
+{% block js%}
+<script>
+$('.detailsHide').hide();
+$(".form_ajax").on("submit",function(e){
+e.preventDefault();
+$.ajax({
+url:$(this).attr('action'),
+type:"POST",
+data:new FormData(this),
+dataType: 'json',
+cache:false,
+contentType:false,
+processData:false,
+success: function(response) {
+$('.detailsHide').show();
+    if(response.item_data.length>0){
+            
+          response.item_data.forEach((item)=>{
+                strreplace=`<li class="list-group-item d-flex justify-content-between align-items-center">
+            ${item.text}
+            <span class="badge bg-primary rounded-pill">${item.time}</span>
+          </li>`; 
+              $('.item').append(strreplace);
+          })
+            
+            var sum=0;
+             $.each(response.item_json, function (key,value) {
+               strreplace=`<li class="list-group-item d-flex justify-content-between align-items-center">
+            ${value[1]}  X ${value[0]}
+            <span class="badge bg-primary rounded-pill">${value[2]*value[0]} Rs.</span>
+          </li>`; 
+              $('.order').append(strreplace);
+              sum=sum+(value[2]*value[0]);
+          
+              
+          });
+           $('.total').html(sum);
+
+
+         
+    }else{
+        strreplace=`<li class="list-group-item d-flex justify-content-between align-items-center">
+        Not Details Found !
+  </li>`; 
+      $('.item').append(strreplace);
+    }
+}
+});
+});
+
+
+
+
+</script>
+{%endblock%}

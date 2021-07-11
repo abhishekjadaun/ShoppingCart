@@ -15,15 +15,17 @@ Including another URLconf
 """
 
 # from django.contrib import admin
-from django.urls import path
+from django.urls import path,re_path
 from shop import views
 urlpatterns = [
     path('',views.index,name='ShopHome'),
     path('about/',views.about,name='AboutUS'),
     path('contact/',views.contact,name='ContactUS'),
-     path('productview/',views.productview,name='ProductView'),
+    path("products/<int:id>",views.productview,name='ProductView'),
     path('search/',views.search,name='Search'),
     path('tracker/',views.tracker,name='TrackingStatus'),
-    path('checkout/',views.checkout,name='Checkout')
-
+    path('checkout/',views.checkout,name='Checkout'),
+    path('payment/<int:id>/',views.payment,name='Payment'),
+    re_path(r'^checkoutDirect/(?P<update_id>\d+)/(?P<id>\d+)/(?P<value>\d+(?:\.\d+)?)/$', views.checkoutDirect, name='checkoutDirect'),
+    path('success',views.success,name="Success")
 ]

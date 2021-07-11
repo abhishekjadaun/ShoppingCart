@@ -1,0 +1,70 @@
+{% extends 'shop/basic.html' %}
+{% block body %}
+<div class="container text-center my-4">
+    <div class="row">
+        <div class="col">
+        <div id="stripePaymentResponse" class="text-danger"></div>
+        </div>
+    </div>
+     <div class="row">
+        <div class="col">
+        {{amount}} Rs. <br/>
+        <br/>
+            <button class="btn btn-primary" id="stripePayButton">Pay with stripe</button>
+
+        </div>
+    </div>
+</div>
+
+{%endblock%}
+{%block js%}
+<script src="https://js.stripe.com/v3/"></script>
+
+<script>
+
+var buyBtn = document.getElementById('stripePayButton');
+var responseContainer = document.getElementById('stripePaymentResponse');
+
+// Create a Checkout Session with the selected product
+var createCheckoutSession = function (stripe) {
+    return fetch("/shop/checkoutDirect/{{update_id}}/{{id}}/{{amount}}/", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+            checkoutSession: 1,
+        }),
+    }).then(function (result) {
+        return result.json();
+    });
+};
+
+// Handle any errors returned from Checkout
+var handleResult = function (result) {
+    if (result.error) {
+        responseContainer.innerHTML = '<p>'+result.error+'</p>';
+    }
+    buyBtn.disabled = false;
+    buyBtn.textContent = 'Buy Now';
+};
+
+// Specify Stripe publishable key to initialize Stripe.js
+var stripe = Stripe("pk_test_51He27oKLe91aE5uBO2uuoMyj7qpgaann2npeBZIpwVS2Roqpnnhia6U2dQyws3Iyeip0jsAQ9cZQRTqk96RZes1u00nLULVqmJ");
+
+buyBtn.addEventListener("click", function (evt) {
+    buyBtn.disabled = true;
+    buyBtn.textContent = 'Please Wait...';
+
+    createCheckoutSession().then(function (data) {
+        if(data.sessionId){
+            stripe.redirectToCheckout({
+                sessionId: data.sessionId,
+            }).then(handleResult);
+        }else{
+            handleResult(data);
+        }
+    });
+});
+</script>
+{%endblock js%}

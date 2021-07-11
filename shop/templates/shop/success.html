@@ -1,0 +1,10 @@
+{% extends 'shop/basic.html' %}
+{% block body%}
+<div class="container">
+{% if msg %}
+<div class="alert alert-success" role="alert">
+  {{msg}}
+</div>
+{%endif %}
+</div>
+{% endblock body%}
