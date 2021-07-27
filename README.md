@@ -1,5 +1,5 @@
 
-# MyAwesomeCart
+# ShoppingCart
 
 This project is shopping cart project with features like product add, checkout, contact ,stripe payment gateway integration, product track and much more. Python, Django, HTML, CSS, Bootstrap, JavaScript, AJAX, is used in this project.
 

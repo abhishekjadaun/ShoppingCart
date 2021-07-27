@@ -1,5 +1,5 @@
 """
-ASGI config for MyAwesomeCart project.
+ASGI config for ShoppingCart project.
 
 It exposes the ASGI callable as a module-level variable named ``application``.
 
