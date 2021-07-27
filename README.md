@@ -23,7 +23,7 @@ This project is shopping cart project with features like product add, checkout, 
 ```bash
  python manage.py createsuperuser
 ```
-4. Run Project
+5. Run Project
 ```bash
  python manage.py runserver
 ```
